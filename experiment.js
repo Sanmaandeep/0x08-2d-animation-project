@@ -1,59 +1,61 @@
-class Experiment {
-  // Group Details
-  static rollNos = '10983437,10983743'
-  static names = 'The Tutors(Akhtar Banga, Phul Tekchand)'
 
-  canvasSel = '#myCanvas'
+const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
 
-  run() {
+  let ball = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    radius: 20,
+  
+  };
 
-    // Run the Steppers
-    // this.runSteppers()
+  let score = 0;
+  let lifelines = 3;
 
-    // Hide Steppers
-    this.hideSteppers()
-    canvasSetup(this.canvasSel)
-
-    // Clock
-    // --------------------------------------------------
-    const clock = new Clock(this.canvasSel)
-    // const ms = document.timeline.currentTime
-    // clock.draw(ms)
-    // clock.draw(ms+25000)
-    const clockRafFn = (ts) => {
-      clock.draw(ts)
-      window.requestAnimationFrame(clockRafFn)
-    }
-    const clockRaf = window.requestAnimationFrame(clockRafFn)
-    
+  function drawBall() {
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+    ctx.fillStyle = '#0095DD';
+    ctx.fill();
+    ctx.closePath();
   }
 
-  runSteppers() {
+  function run() {
+    drawBall();
+    drawPaddle();
 
-    // Steppers
-    // --------------------------------------------------
-    const stepperOneRaf
-	  = window.requestAnimationFrame(stepperOne)
-
-    const stepperTwoRaf
-	  = window.requestAnimationFrame(stepperTwo)
-
-    const stepperThree = new StepperThree(
-      '#valueFromStepperThree', 15
-    )
-    const stepperThreeFn = (ts) => {
-      if (!stepperThree.isActive) stepperThree.start()
-      stepperThree.step(ts)
-      window.requestAnimationFrame(stepperThreeFn)
-    }
-    const stepperThreeRaf
-	  = window.requestAnimationFrame(stepperThreeFn)
-    // --------------------------------------------------
-    
   }
 
-  hideSteppers() {
-    document.querySelector('#side-note')
-      .classList.add('hidden')
+  let paddle = {
+    x: (canvas.width - 100) / 2,
+    y: canvas.height - 20,
+    width: 100,
+    height: 10,
+    color: '#0095DD'
+  };
+
+  function drawPaddle() {
+    ctx.beginPath();
+    ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height);
+    ctx.fillStyle = paddle.color;
+    ctx.fill();
+    ctx.closePath();
   }
-}
+
+  
+  
+  run();
+ 
+  document.getElementById('downloadOverlay').addEventListener('click', function() {
+    const downloadLink = document.createElement('a');
+    downloadLink.href = canvas.toDataURL();
+    downloadLink.download = 'bouncing_ball_game.png';
+    downloadLink.click();
+  });
+  
+  document.getElementById('textBtn').addEventListener('click', function() {
+    const text = document.getElementById('textInput').value;
+    ctx.font = '20px Arial';
+    ctx.fillStyle = '#fff';
+    ctx.fillText(text, canvas.width - 150, 30);
+  });
